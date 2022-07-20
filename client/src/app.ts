@@ -21,13 +21,11 @@ function delay(ms: number) {
 
 export class App {
   adminKeypair: Keypair
-  dataPubkey: PublicKey
   programKeypair: Keypair
   connection: Connection
 
   constructor() {
     this.adminKeypair = App.readKeypairFromPath(__dirname + "/../../localnet/admin.json")
-    this.dataPubkey = new PublicKey(0)
     this.programKeypair = App.readKeypairFromPath(__dirname + "/../../localnet/program.json")
     this.connection = new Connection("http://localhost:8899", "confirmed")
   }
@@ -39,18 +37,17 @@ export class App {
       process.exit(1)
     }
     console.log("admin", this.adminKeypair.publicKey.toBase58())
-    console.log("data", this.dataPubkey.toBase58())
     console.log("program", this.programKeypair.publicKey.toBase58())
   }
 
   async createIPDataAccount(ip_array: Array<BN>) {
-    var dataKeypair = Keypair.generate();
+    const dataKeypair = Keypair.generate();
     console.log(`ipdata key: ${dataKeypair.publicKey.toBase58()}`);
-    var saveIPData = new TransactionInstruction({
+    const saveIPData = new TransactionInstruction({
       programId: this.programKeypair.publicKey,
       keys: [
         { pubkey: this.adminKeypair.publicKey, isSigner: true, isWritable: true, },
-        { pubkey: this.dataPubkey.publicKey, isSigner: false, isWritable: true },
+        { pubkey: dataKeypair.publicKey, isSigner: false, isWritable: true },
         { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
         { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
       ],
@@ -66,34 +63,6 @@ export class App {
     console.log("save ip data tx", txHash)
     await delay(3000)
     return dataKeypair
-  }
-
-  async readIPDataAccount(): Promise<IPData> {
-    const account = await this.connection.getAccountInfo(this.dataPubkey)
-    if (!account) {
-      console.error("ip data account is not found")
-      process.exit(1)
-    }
-    return decodeIPData(account.data)
-  }
-
-  async createIPData() {
-    const data = encodeIPData([new BN(1)])
-    const lamports = await this.connection.getMinimumBalanceForRentExemption(data.length)
-    const createAccountIx = SystemProgram.createAccountWithSeed({
-      fromPubkey: this.adminKeypair.publicKey,
-      basePubkey: this.dataPubkey,
-      seed: "",
-      newAccountPubkey: this.dataPubkey,
-      space: data.length,
-      lamports: lamports,
-      programId: this.programKeypair.publicKey,
-    })
-
-    const tx = new Transaction().add(createAccountIx)
-    const res = await this.connection.sendTransaction(tx, [this.adminKeypair])
-    console.log("create ip data tx", res)
-    await delay(3000)
   }
 
   static readKeypairFromPath(path: string): Keypair {
