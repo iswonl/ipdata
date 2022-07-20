@@ -5,7 +5,7 @@ import {
   PublicKey,
   SystemProgram,
   SYSVAR_RENT_PUBKEY,
-  Tran saction,
+  Transaction,
   TransactionInstruction,
 } from "@solana/web3.js"
 import {
