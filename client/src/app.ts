@@ -5,7 +5,7 @@ import {
   PublicKey,
   SystemProgram,
   SYSVAR_RENT_PUBKEY,
-  Transaction,
+  Tran saction,
   TransactionInstruction,
 } from "@solana/web3.js"
 import {
@@ -43,30 +43,29 @@ export class App {
     console.log("program", this.programKeypair.publicKey.toBase58())
   }
 
-  async saveIP(ip_array: Array<BN>) {
-    var saveIP = new TransactionInstruction({
+  async createIPDataAccount(ip_array: Array<BN>) {
+    var dataKeypair = Keypair.generate();
+    console.log(`ipdata key: ${dataKeypair.publicKey.toBase58()}`);
+    var saveIPData = new TransactionInstruction({
       programId: this.programKeypair.publicKey,
       keys: [
-        {
-          pubkey: this.adminKeypair.publicKey,
-          isSigner: true,
-          isWritable: true,
-        },
-        { pubkey: this.dataPubkey, isSigner: false, isWritable: true },
+        { pubkey: this.adminKeypair.publicKey, isSigner: true, isWritable: true, },
+        { pubkey: this.dataPubkey.publicKey, isSigner: false, isWritable: true },
         { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
         { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
       ],
       data: encodeIPData(ip_array),
     })
 
-    const tx = new Transaction().add(saveIP)
+    const tx = new Transaction().add(saveIPData)
     const txHash = await this.connection.sendTransaction(
       tx,
-      [this.dataPubkey, this.adminKeypair],
+      [dataKeypair, this.adminKeypair],
       { preflightCommitment: "max" }
     )
     console.log("save ip data tx", txHash)
     await delay(3000)
+    return dataKeypair
   }
 
   async readIPDataAccount(): Promise<IPData> {
