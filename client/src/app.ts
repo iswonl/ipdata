@@ -57,8 +57,7 @@ export class App {
     const tx = new Transaction().add(saveIPData)
     const txHash = await this.connection.sendTransaction(
       tx,
-      [dataKeypair, this.adminKeypair],
-      { preflightCommitment: "max" }
+      [this.adminKeypair]
     )
     console.log("save ip data tx", txHash)
     await delay(3000)

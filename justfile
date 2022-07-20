@@ -7,17 +7,13 @@ localnet-init:
 testnet-airdrop:
 	solana airdrop 10 localnet/admin.json -u testnet
 
-test:
-	cd program; cargo test
-	cd program; cargo test-bpf
-
-localnet-deploy: test
-	cd program; cargo build-bpf
-	solana program deploy program/target/deploy/ipdata.so -u localhost --program-id localnet/program.json
+localnet-deploy:
+	cd program; cargo-build-bpf
+	solana program deploy program/target/deploy/ip_data.so -u localhost --program-id localnet/program.json
 
 testnet-deploy: test
-	cd program; cargo build-bpf
-	solana program deploy program/target/deploy/ipdata.so -u testnet --program-id localnet/program.json --keypair localnet/admin.json --upgrade-authority localnet/admin.json
+	cd program; cargo-build-bpf
+	solana program deploy program/target/deploy/ip_data.so -u testnet --program-id localnet/program.json --keypair localnet/admin.json --upgrade-authority localnet/admin.json
 
 client:
     cd client; npm install
