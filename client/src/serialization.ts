@@ -15,6 +15,6 @@ export function encodeIPData(
 ): Buffer {
   const schema = lo.struct([lo.seq(lo.ns64(), ip_data.length, "ip_array")])
   const b = Buffer.alloc(4 + 8 * ip_data.length)
-  schema.encode({ ip_data }, b)
+  schema.encode({ ip_array: ip_data }, b)
   return Buffer.from(b)
 }

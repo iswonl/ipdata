@@ -33,7 +33,7 @@ export class App {
   async init() {
     const res = await this.connection.getAccountInfo(this.programKeypair.publicKey)
     if (!res) {
-      console.error("Counter is not deployed. Deploy it first.")
+      console.error("program not found!")
       process.exit(1)
     }
     console.log("admin", this.adminKeypair.publicKey.toBase58())
