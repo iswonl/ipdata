@@ -27,7 +27,7 @@ export class App {
   constructor() {
     this.adminKeypair = App.readKeypairFromPath(__dirname + "/../../localnet/admin.json")
     this.programKeypair = App.readKeypairFromPath(__dirname + "/../../localnet/program.json")
-    this.connection = new Connection("http://localhost:8899", "confirmed")
+    this.connection = new Connection("https://api.devnet.solana.com", "confirmed")
   }
 
   async init() {
@@ -53,6 +53,7 @@ export class App {
       ],
       data: encodeIPData(ip_array),
     })
+    console.log("data: " + JSON.stringify(encodeIPData(ip_array).toJSON()))
 
     const tx = new Transaction().add(saveIPData)
     const txHash = await this.connection.sendTransaction(

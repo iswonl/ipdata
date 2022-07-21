@@ -4,7 +4,7 @@ import BN from "bn.js"
 async function main() {
   const app = new App()
   await app.init()
-  const dataKeypair = await app.createIPDataAccount([new BN(1),new BN(2),new BN(3)])
+  const dataKeypair = await app.createIPDataAccount([new BN(1)])
   console.log(dataKeypair)
 }
 
