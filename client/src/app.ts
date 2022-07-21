@@ -20,6 +20,8 @@ function delay(ms: number) {
 }
 
 export class App {
+  static dataSeed = "data"
+
   adminKeypair: Keypair
   programKeypair: Keypair
   connection: Connection
@@ -36,8 +38,8 @@ export class App {
       console.error("program not found!")
       process.exit(1)
     }
-    console.log("admin", this.adminKeypair.publicKey.toBase58())
-    console.log("program", this.programKeypair.publicKey.toBase58())
+    console.log("admin key:", this.adminKeypair.publicKey.toBase58())
+    console.log("program key:", this.programKeypair.publicKey.toBase58())
   }
 
   async createIPDataAccount(ip_array: IPData) {
@@ -58,9 +60,9 @@ export class App {
     const tx = new Transaction().add(saveIPData)
     const txHash = await this.connection.sendTransaction(
       tx,
-      [this.adminKeypair]
+      [this.adminKeypair, dataKeypair]
     )
-    console.log("save ip data tx", txHash)
+    console.log("save ip data tx:", txHash)
     await delay(3000)
     return dataKeypair
   }
