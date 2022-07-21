@@ -65,6 +65,15 @@ export class App {
     return dataKeypair
   }
 
+  async readIPDataAccount(dataKey: PublicKey): Promise<IPData> {
+    const account = await this.connection.getAccountInfo(dataKey)
+    if (!account) {
+      console.error("ipdata account is not found")
+      process.exit(1)
+    }
+    return decodeIPData(account.data)
+  }
+
   static readKeypairFromPath(path: string): Keypair {
     const data = JSON.parse(readFileSync(path, "utf-8"))
     return Keypair.fromSecretKey(Buffer.from(data))

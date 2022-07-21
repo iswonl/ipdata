@@ -5,7 +5,9 @@ async function main() {
   const app = new App()
   await app.init()
   const dataKeypair = await app.createIPDataAccount([new BN(1)])
-  console.log(dataKeypair)
+  const data = await app.readIPDataAccount(dataKeypair.publicKey)
+  console.log("account: " + dataKeypair)
+  console.log("data: " + data)
 }
 
 main()
