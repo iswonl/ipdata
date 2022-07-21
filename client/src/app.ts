@@ -62,7 +62,7 @@ export class App {
       [this.adminKeypair, dataKeypair]
     )
     console.log("save ip data tx:", txHash)
-    await delay(3000)
+    console.log("transaction status:", await this.connection.confirmTransaction(txHash))
     return dataKeypair
   }
 
