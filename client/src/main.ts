@@ -4,7 +4,7 @@ import BN from "bn.js"
 async function main() {
   const app = new App()
   await app.init()
-  const dataKeypair = await app.createIPDataAccount([new BN(1)])
+  const dataKeypair = await app.createIPDataAccount({ip_array: [new BN(1)]})
   const data = await app.readIPDataAccount(dataKeypair.publicKey)
   console.log("account: " + dataKeypair)
   console.log("data: " + data)

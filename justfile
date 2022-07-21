@@ -1,8 +1,8 @@
 localnet-validator:
-	solana-test-validator -r --ledger localnet/ledger
+	solana-test-validator -r --ledger devnet
 
-localnet-init:
-	solana airdrop 1 localnet/admin.json -u localhost
+devnet-init:
+	solana airdrop 1 localnet/admin.json -u devnet
 
 testnet-airdrop:
 	solana airdrop 10 localnet/admin.json -u testnet
@@ -11,9 +11,9 @@ localnet-deploy:
 	cd program; cargo-build-bpf
 	solana program deploy program/target/deploy/ip_data.so -u localhost --program-id localnet/program.json
 
-testnet-deploy: test
+devnet-deploy: test
 	cd program; cargo-build-bpf
-	solana program deploy program/target/deploy/ip_data.so -u testnet --program-id localnet/program.json --keypair localnet/admin.json --upgrade-authority localnet/admin.json
+	solana program deploy program/target/deploy/ip_data.so -u devnet --program-id localnet/program.json --keypair localnet/admin.json --upgrade-authority localnet/admin.json
 
 client:
     cd client; npm install
