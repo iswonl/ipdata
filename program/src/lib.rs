@@ -42,15 +42,19 @@ pub fn process_instruction(
     let system_program_info = next_account_info(accounts_iter)?;
 
     if !admin_info.is_signer {
-        msg!("admin is not signer");
+        msg!("admin is not signer!");
         return Err(ProgramError::MissingRequiredSignature);
     }
     if !admin_info.is_writable {
-        msg!("admin is not writable");
+        msg!("admin is not writable!");
+        return Err(ProgramError::MissingRequiredSignature);
+    }
+    if !data_info.is_signer {
+        msg!("admin is not signer!");
         return Err(ProgramError::MissingRequiredSignature);
     }
     if !data_info.is_writable {
-        msg!("data account is not writable");
+        msg!("data account is not writable!");
         return Err(ProgramError::MissingRequiredSignature);
     }
     if !data_info.data_is_empty() {
@@ -58,7 +62,7 @@ pub fn process_instruction(
         return Err(ProgramError::AccountAlreadyInitialized);
     }
     
-    msg!("creating account...");
+    msg!("creating data account...");
 
     let data = IPData::try_from_slice(_instruction_data)?;
     let space = _instruction_data.len();
@@ -75,8 +79,9 @@ pub fn process_instruction(
         &[admin_info.clone(), data_info.clone(), system_program_info.clone()],
         &[],
     )?;
+    msg!("saving data to account...");
     data.serialize(&mut &mut data_info.data.borrow_mut()[..])?;
-    msg!("save ip data {:?} to account: {:?}", data_info.data, data_info.key);
+    msg!("saved ip data {:?} to account {:?}", data_info.data, data_info.key);
     Ok(())
 }
 

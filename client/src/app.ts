@@ -20,8 +20,6 @@ function delay(ms: number) {
 }
 
 export class App {
-  static dataSeed = "data"
-
   adminKeypair: Keypair
   programKeypair: Keypair
   connection: Connection
@@ -42,9 +40,10 @@ export class App {
     console.log("program key:", this.programKeypair.publicKey.toBase58())
   }
 
-  async createIPDataAccount(ip_array: IPData) {
+  async createIPDataAccount(ip_data: IPData) {
     const dataKeypair = Keypair.generate();
-    console.log(`ipdata key: ${dataKeypair.publicKey.toBase58()}`);
+    console.log("ipdata key:", dataKeypair.publicKey.toBase58())
+    const data = encodeIPData(ip_data)
     const saveIPData = new TransactionInstruction({
       programId: this.programKeypair.publicKey,
       keys: [
@@ -53,9 +52,9 @@ export class App {
         { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
         { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
       ],
-      data: encodeIPData(ip_array),
+      data: data,
     })
-    console.log("data: " + JSON.stringify(encodeIPData(ip_array).toJSON()))
+    console.log("data:", JSON.stringify(data.toJSON().data))
 
     const tx = new Transaction().add(saveIPData)
     const txHash = await this.connection.sendTransaction(
@@ -70,7 +69,7 @@ export class App {
   async readIPDataAccount(dataKey: PublicKey): Promise<IPData> {
     const account = await this.connection.getAccountInfo(dataKey)
     if (!account) {
-      console.error("ipdata account is not found")
+      console.error("ipdata account is not found!")
       process.exit(1)
     }
     return decodeIPData(account.data)
