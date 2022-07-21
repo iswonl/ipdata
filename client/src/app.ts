@@ -40,7 +40,7 @@ export class App {
     console.log("program", this.programKeypair.publicKey.toBase58())
   }
 
-  async createIPDataAccount(ip_array: Array<BN>) {
+  async createIPDataAccount(ip_array: IPData) {
     const dataKeypair = Keypair.generate();
     console.log(`ipdata key: ${dataKeypair.publicKey.toBase58()}`);
     const saveIPData = new TransactionInstruction({

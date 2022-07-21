@@ -70,7 +70,7 @@ pub fn process_instruction(
             &data_info.key,
             lamports,
             space as u64,
-            program_id,
+            &program_id,
         ),
         &[admin_info.clone(), data_info.clone(), system_program_info.clone()],
         &[],
